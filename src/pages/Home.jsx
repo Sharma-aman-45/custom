@@ -1,8 +1,29 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { FaGithub, FaTwitter, FaLinkedinIn, FaBehance, FaDribbble } from 'react-icons/fa';
+import { FaGithub, FaTwitter, FaLinkedinIn, FaBehance, FaDribbble, FaStar } from 'react-icons/fa';
 import { useTheme } from '../context/ThemeContext';
 import developerImage from '../assets/OIP.jpeg';
+import { useState } from 'react';
+
+const reviews = [
+  {
+    id: 1,
+    name: "John Doe",
+    role: "CEO, Tech Corp",
+    rating: 5,
+    comment: "Exceptional work! The attention to detail and technical expertise demonstrated in our project was outstanding.",
+    image: "https://static.vecteezy.com/system/resources/previews/000/574/512/original/vector-sign-of-user-icon.jpg"
+  },
+  {
+    id: 2,
+    name: "Sarah Smith",
+    role: "Marketing Director",
+    rating: 5,
+    comment: "Delivered our website ahead of schedule with excellent quality. Very professional and communicative throughout.",
+    image: "https://static.vecteezy.com/system/resources/previews/000/574/512/original/vector-sign-of-user-icon.jpg"
+  },
+  // Add more reviews as needed
+];
 
 const Home = () => {
   const [ref, inView] = useInView({
@@ -18,6 +39,21 @@ const Home = () => {
     { icon: <FaBehance size={24} />, href: "#" },
     { icon: <FaDribbble size={24} />, href: "#" },
   ];
+
+  const [newReview, setNewReview] = useState({
+    name: '',
+    role: '',
+    rating: 5,
+    comment: ''
+  });
+
+  const handleReviewSubmit = (e) => {
+    e.preventDefault();
+    // Here you would typically send this to your backend
+    console.log('New review:', newReview);
+    // Reset form
+    setNewReview({ name: '', role: '', rating: 5, comment: '' });
+  };
 
   return (
     <div className={`min-h-screen ${isDarkMode ? 'bg-black' : 'bg-white'}`}>
@@ -163,6 +199,146 @@ const Home = () => {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Reviews Section */}
+      <section className={`py-20 border-t ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-3xl font-bold mb-4 text-blue-500">Client Reviews</h2>
+            <p className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
+              What our clients say about us
+            </p>
+          </motion.div>
+
+          {/* Review Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            {reviews.map((review) => (
+              <motion.div
+                key={review.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.8 }}
+                className={`p-6 rounded-xl backdrop-blur-sm border ${
+                  isDarkMode ? 'bg-gray-900/50 border-gray-800' : 'bg-gray-50 border-gray-200'
+                }`}
+              >
+                <div className="flex items-center mb-4">
+                  <img
+                    src={review.image}
+                    alt={review.name}
+                    className="w-12 h-12 rounded-full mr-4"
+                  />
+                  <div>
+                    <h3 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                      {review.name}
+                    </h3>
+                    <p className="text-sm text-gray-500">{review.role}</p>
+                  </div>
+                </div>
+                <div className="flex text-yellow-400 mb-2">
+                  {[...Array(5)].map((_, i) => (
+                    <FaStar
+                      key={i}
+                      className={i < review.rating ? 'text-yellow-400' : 'text-gray-300'}
+                    />
+                  ))}
+                </div>
+                <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                  {review.comment}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Add Review Form */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8 }}
+            className={`max-w-2xl mx-auto p-8 rounded-xl border ${
+              isDarkMode ? 'bg-gray-900/50 border-gray-800' : 'bg-gray-50 border-gray-200'
+            }`}
+          >
+            <h3 className={`text-2xl font-bold mb-6 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              Leave a Review
+            </h3>
+            <form onSubmit={handleReviewSubmit} className="space-y-6">
+              <div>
+                <label className={`block mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  Name
+                </label>
+                <input
+                  type="text"
+                  value={newReview.name}
+                  onChange={(e) => setNewReview({...newReview, name: e.target.value})}
+                  className={`w-full p-3 rounded-lg border ${
+                    isDarkMode ? 'bg-gray-800 border-gray-700 text-white' : 'bg-white border-gray-300'
+                  }`}
+                  required
+                />
+              </div>
+              <div>
+                <label className={`block mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  Role
+                </label>
+                <input
+                  type="text"
+                  value={newReview.role}
+                  onChange={(e) => setNewReview({...newReview, role: e.target.value})}
+                  className={`w-full p-3 rounded-lg border ${
+                    isDarkMode ? 'bg-gray-800 border-gray-700 text-white' : 'bg-white border-gray-300'
+                  }`}
+                  required
+                />
+              </div>
+              <div>
+                <label className={`block mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  Rating
+                </label>
+                <div className="flex gap-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setNewReview({...newReview, rating: star})}
+                      className="text-2xl focus:outline-none"
+                    >
+                      <FaStar
+                        className={star <= newReview.rating ? 'text-yellow-400' : 'text-gray-300'}
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className={`block mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  Comment
+                </label>
+                <textarea
+                  value={newReview.comment}
+                  onChange={(e) => setNewReview({...newReview, comment: e.target.value})}
+                  className={`w-full p-3 rounded-lg border ${
+                    isDarkMode ? 'bg-gray-800 border-gray-700 text-white' : 'bg-white border-gray-300'
+                  }`}
+                  rows="4"
+                  required
+                ></textarea>
+              </div>
+              <button
+                type="submit"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors"
+              >
+                Submit Review
+              </button>
+            </form>
+          </motion.div>
         </div>
       </section>
     </div>
